@@ -19,8 +19,8 @@ The process has **6** (six) stages, Planning, Design, Building, Testing, Deployi
 **Description**: User using AI synthesizes pain points straight from the sources and captures them in an intent.md.  This file is human and machine actionable
 
 - **Deliverable**: `intent.md`
-- **Who**: Product owner watches.
-- **Where** to store: in product repo or if 
+- **Who**: Product owner watches, tech team stands up the intent in the repo.
+- **Where**: in product repo or if the intent covers many repos, then we may one to create an intent repo to store the intent.
 
 You start with an idea, brain storm with your prefer agent: 
 
