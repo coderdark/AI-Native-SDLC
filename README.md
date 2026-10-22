@@ -2,6 +2,8 @@
 
 ## What is SDLC: 
 Process that takes software from idea to products
+
+The process has **6** (six) stages, Planning, Design, Building, Testing, Deploying and Maintaining.
 	
 
 ## PLAN PHASE
