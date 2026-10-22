@@ -71,7 +71,7 @@ Author: <name> (<team>). Status: draft.
 
 ```
 # Intent: claims status self-service
-Author: J. Ortiz (claims operations). Status: draft.
+Author: J. Doe (claims operations). Status: draft.
 ## Problem
 Customers phone the contact center to ask where their claim is.
 Handlers spend roughly a third of call time on status-only queries.
