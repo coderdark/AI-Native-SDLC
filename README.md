@@ -1,21 +1,24 @@
 # AI-Native SDLC
 
 ## What is the SDLC?
-The process that takes software from an idea to a product.
+The SDLC (software development life cycle) is the process that takes software from an idea to a product.
 
-The process has **six** stages: Planning, Designing, Building, Testing, Deploying and Maintaining.
+It has **six** phases: Plan, Design, Build, Test, Deployment and Maintenance.
 
-## Old SDLC
-- **Plan**: Requirements gathering.
-- **Design**: Specs (detailed written requirements and design documents).
-- **Build**: Tests and code (handwritten), and documentation written after the development happens.
-- **Test**: QA gates at stage boundaries.
-- **Deploy**: Humans review every line of code and governance occurs in review cycles and often inconsistently.
-- **Maintain**: Humans watch production for bugs.
+## The old way
+
+| Phase | Who | How it works |
+| :---- | :---- | :---- |
+| Plan | Product managers and business analysts, with stakeholders | Requirements gathering. |
+| Design | Business analysts, architects and designers | Specs (detailed written requirements and design documents). |
+| Build | Developers | Code and tests are written by hand. Documentation is written after development. |
+| Test | QA testers | Work is checked only between phases (QA gates). |
+| Deployment | Senior developers (code review) and the operations or release team | Humans review every line of code. Rules are checked in review meetings, often inconsistently. |
+| Maintenance | Operations and support teams | Humans watch production for bugs. |
 
 > **Humans are accountable for every decision that requires judgement.**
 
-## AI-Native SDLC
+## The AI-native way
 
 | Phase | Deliverable |
 | :---- | :---- |
@@ -27,23 +30,22 @@ The process has **six** stages: Planning, Designing, Building, Testing, Deployin
 | Maintenance | A new `intent.md` |
 
 ### Plan Phase
-**Description**: The user, working with AI, synthesizes pain points straight from the sources and captures them in an `intent.md`. This file is readable by humans and actionable by machines.
+**Description**: You work with an agent to collect pain points straight from the sources and write them down in `intent.md`. People can read this file, and agents can act on it.
 
 - **Deliverable**: `intent.md`
-- **Who**: Product owner watches and approves, tech team stands up the intent in the repo.
-- **Where**: In the product repo. If the intent covers many repos, you may want to create an intent repo to store it.
-- **Prerequisites**: An idea and a brainstorm
-- **Automation**: Use the `write-intent` skill in this repo, or Matt Pocock’s `grill-me` skill, to run the brainstorm and write the `intent.md`.
+- **Who**: The product owner works with the agent and approves the result. The tech team adds it to the repo.
+- **Where**: In the product repo, in a separate intent repo (if it covers many repos), or in a ticket (for example, Jira).
+- **Prerequisites**: An idea
+- **Automation**: The `write-intent` skill in this repo can run the brainstorm and write `intent.md` for you.
 
-You start with an idea and brainstorm with your preferred agent. The agent asks the questions an analyst would ask, such as scope, users, constraints and what success looks like. The intent covers the problem, proposed outcome, affected users and systems, constraints and open questions.
+**How it works:**
 
-Or you can start with **Matt Pocock’s** [`grill-me`](https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md) skill. It is an interview skill that stress-tests plans and designs through systematic questioning, going through a decision tree branch by branch until a shared understanding is reached.
+1. Start with an idea and brainstorm with your agent. The agent asks the questions an analyst would ask: scope, users, constraints and what success looks like.
+2. Or start with **Matt Pocock’s** [`grill-me`](https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md) skill. It interviews you, branch by branch, until the plan is clear.
+3. When the brainstorm is done, create the `intent.md` file. It covers the problem, proposed outcome, affected users and systems, constraints and open questions.
+4. The product owner approves or rejects it. Approving means merging it; rejecting means closing the review. Only an approved intent moves on to the Design phase.
 
-Once the brainstorming or `grill-me` session is done, we create an `intent.md` file. This file does not have to be in the repo. It can be in a ticket (Jira).
-
-The product owner approves, and the accept or reject decision that sends the intent into Stage 2: Design is recorded as the merge or the closing review.
-
-Prompt to create the `intent.md` file:
+**Prompt to create the `intent.md` file:**
 
 ```
 That is clear enough. Now write the file at <YOUR_PATH>/intent.md.
@@ -55,7 +57,7 @@ Constraints, Open questions.
 Write only what I said. Put anything I did not say into Open questions. Do not invent it.
 ```
 
-Example `intent.md`
+**Example `intent.md`:**
 
 ```markdown
 # Intent: claims status self-service
@@ -81,15 +83,15 @@ Do third-party loss adjusters need access too?
 ---
 
 ### Design Phase
-**Description**: The user, working with an agent, merges requirements and design into one working session, guided by standards encoded as skills and stored in a Git repo.
+**Description**: You work with an agent to write the requirements and the design together, in one session. Skills make sure it follows your company’s standards.
 
 - **Deliverable**: `spec.md`
-- **Who**: Product owner, using the `intent.md`
-- **Where**: In the intent/ folder, next to the `intent.md`
+- **Who**: The product owner, starting from the approved `intent.md`
+- **Where**: In the same folder as `intent.md`
 - **Prerequisites**: `intent.md`
-- **Automation**: The `spec.md` creation can be automated: merging the accepted `intent.md` runs a script or GitHub workflow that opens the `spec.md` pull request.
+- **Automation**: This can run on its own. When an `intent.md` is approved (merged), a script or GitHub workflow creates `spec.md` as a pull request.
 
-You can use the following prompt to create the `spec.md` file:
+**Prompt to create the `spec.md` file:**
 
 ```
 Read the attached intent.md and produce a requirements and design spec for integrating it into our existing codebase. Apply the skills available to you so the plan conforms to our brand guidelines, security policies and UX standards. Document the spec fully as spec.md, ready to hand to the engineering team. Describe clearly any areas of concern, especially where you cannot satisfy contradicting policies.
@@ -100,17 +102,22 @@ You can also use **Matt Pocock’s** [`to-spec`](https://github.com/mattpocock/s
 ---
 
 ### Build Phase
-**Description**: Code and tests are generated using AI. Institutional knowledge, as `AGENT.md` (`CLAUDE.md` -> `AGENT.md`) and skills, is stored in the Git repo.
+**Description**: The agent writes the code and tests. The team’s knowledge lives in `AGENT.md` and skills, stored in the Git repo.
 
 - **Deliverable**: `plan.md`
 - **Who**: Engineers
-- **Where**: Codebase repo
-- **Prerequisites**: `intent.md`, `spec.md` and `AGENT.md` (`CLAUDE.md` -> `AGENT.md`)
-- **Automation**: When the **implementation** diverges from the **plan**, update `plan.md` in the same commit. Use a hook for synchronization between the two (implementation and plan).
+- **Where**: The code repo
+- **Prerequisites**: `intent.md`, `spec.md` and `AGENT.md`
+- **Automation**: A hook can check that `plan.md` and the code stay in sync.
 
-The engineer opens their agent in plan mode and uses the approved `spec.md` and `intent.md` files. Iterate until the engineer is happy with the plan. Commit the plan once ready as `plan.md`. If implementation diverges from the plan, make sure the `plan.md` file is updated.  You can use hooks to sync the implementation with the plan.
+**How it works:**
 
-The engineer interrogates the plan by asking what could break with the change, which step is most risky, and what other options there are.
+1. The engineer opens the agent in plan mode with the approved `spec.md` and `intent.md`.
+2. The engineer questions the plan: What could break? Which step is riskiest? What other options are there?
+3. When the plan is ready, commit it as `plan.md`.
+4. If the code later changes from the plan, update `plan.md` in the same commit.
+
+**Example `plan.md`:**
 
 ```markdown
 # Plan: claims status self-service (from intent.md 2026-06-02)
@@ -134,10 +141,11 @@ approved mock.
 
 **R1, R2, R3, R4** are requirements from the `spec.md`.
 
-#### `AGENT.md` (`CLAUDE.md` -> `AGENT.md`)
+#### `AGENT.md`
 
-The `AGENT.md` (`CLAUDE.md` -> `AGENT.md`) file covers conventions, commands, architecture, and the mistakes the team sees most often. Knowledge that used to sit in people's heads and on wikis becomes a file the agent reads at the start of every session, maintained by the whole team and iterated on whenever a mistake is made.
+`AGENT.md` is the file the agent reads at the start of every session. It holds the team’s commands, conventions, architecture, and the mistakes the agent makes most often. Knowledge that used to live in people’s heads and on wikis becomes a file. The whole team keeps it up to date and adds to it whenever a mistake happens.
 
+> Claude Code looks for `CLAUDE.md`, so link `CLAUDE.md` to `AGENT.md` (`CLAUDE.md` -> `AGENT.md`).
 
 ```markdown
 # Payments service
@@ -163,11 +171,12 @@ The `AGENT.md` (`CLAUDE.md` -> `AGENT.md`) file covers conventions, commands, ar
 ```
 
 #### Skills
-A skill is a packaged set of instructions that teaches AI how your organization does a specific kind of work. It captures reusable company, technical and institutional knowledge, such as brand guidelines, security policies or UX standards. Skills are version controlled and shared across every team. When a policy changes, the skill is updated once, and every team's work follows the new standard consistently.
-
+A skill is a packaged set of instructions that teaches the agent how your company does a certain kind of work, for example brand guidelines, security policies or UX standards. Skills are stored in Git and shared by every team. When a policy changes, you update the skill once, and every team follows the new rule.
 
 #### Hooks
-Hooks are automatic rules that run at specific moments while Claude Code works. You can use hooks to run checks such as linting or removing sensitive data.
+Hooks are automatic checks that run at set moments while the agent works, for example after it edits a file. They run every time, so the agent can’t skip them. Use them for checks like linting or keeping sensitive data out of logs.
+
+In this example, after every file edit, a script checks that no private data (PII) ends up in a log or an error message. If it does, the hook tells the agent to fix it.
 
 ```json
 {
@@ -203,12 +212,10 @@ exit 0
 ```
 
 #### Parallel sessions and subagents
-- A parallel session is a full agent instance, and each one works on its own task in its own Git worktree.
-- Subagents are helpers that an agent sends off to handle parts of a job. They are started from a single session, and each one works in its own separate context.
-
-- An engineer can run multiple agent sessions at once, each with its own worktree.
-- An engineer can create their own subagents to run repeated jobs.
-- The engineer becomes an orchestrator.
+- **Parallel sessions**: several full agents running at once. Each one works on its own task, in its own copy of the code (a Git worktree).
+- **Subagents**: helpers that one agent sends off to do part of a job. Each one works separately and reports back.
+- Engineers can create their own subagents for jobs they repeat.
+- The engineer’s role becomes directing the agents, like an orchestra conductor.
 
 > **Watch out: high token use.**
 
@@ -221,14 +228,16 @@ Each subagent starts fresh. It doesn’t know what the main agent already knows.
 ---
 
 ### Test Phase
-**Description**: Sessions check their own work before a human sees it, and the configuration that steers the agent gets regression-tested like the code it writes.
+**Description**: The agent checks its own work before a person sees it.
 
-- **Deliverables**: Tests
+- **Deliverable**: Tests
 - **Who**: Engineers
-- **Where**: Repo
+- **Where**: The code repo
 - **Prerequisites**: `AGENT.md` with the build, test and lint commands
 
-#### In `AGENT.md` (`CLAUDE.md` -> `AGENT.md`)
+#### In `AGENT.md`
+
+Add your build, test and lint commands to `AGENT.md`, with clear goals the agent can check. Then the agent can test its own work. You can also use TDD (red, green, refactor): write a failing test first, then make it pass.
 
 ```markdown
 ## Verifying your work
@@ -241,18 +250,17 @@ Run all three before reporting any task complete, and paste the output.
 If a test fails, fix the code, not the test.
 ```
 
-Make the agent verify its own work by adding commands to your `AGENT.md` (`CLAUDE.md` -> `AGENT.md`) and giving it clear, measurable goals. You can also use the TDD approach (red, green, refactor).
-
 ---
 
 ### Deployment Phase
-**Description**: Review runs in both directions, and governance is enforced as the agent acts. The agent does everything up to the production gate and nothing past it.
+**Description**: The agent reviews other people’s code and fixes the comments on its own code. Rules are checked automatically while the agent works. The agent does everything up to the release to production. A person approves the release.
 
-- **Deliverables**: `REVIEW.md`
+- **Deliverable**: `REVIEW.md`
 - **Who**: Tech lead
-- **Automation**: Code reviews run when someone opens a PR, using `REVIEW.md`
+- **Automation**: When someone opens a PR, the code review runs automatically, using `REVIEW.md`.
 
 #### `REVIEW.md` example
+
 ```markdown
 # Review instructions
 ## Passes
@@ -269,16 +277,32 @@ Report at most five nits per review; summarize the rest as a count.
 Generated files under src/gen/ and anything CI already enforces.
 ```
 
-Use already established bots, skills, agents and hooks for reviews.
+Reuse the review bots, skills, agents and hooks you already have.
 
 ---
 
 ### Maintenance Phase
-**Description**: The loop closes. A trigger invokes Claude with no person in the invocation path, and what it finds re-enters the pipeline as `intent.md`.
+**Description**: The loop closes. Problems found in production become new work, without anyone having to start it.
 
 - **Deliverable**: A new `intent.md`
-- **Automation**: A trigger starts an agent, which investigates the problem and writes the new `intent.md`.
+- **Who**: People sort and review what the agent finds. They no longer have to start the work.
+- **Automation**: A trigger starts an agent. The agent investigates the problem and writes what it finds as a new `intent.md`.
 
-The loop starts again: it creates a new `intent.md` file, which goes through all the phases again.
+A trigger can be:
 
-A trigger such as a control-band breach, a ticket, a channel message or a schedule invokes Claude without a person in the path.
+- a number (like the error rate) moving outside its normal range
+- a ticket
+- a message in a team channel
+- a schedule
+
+The agent can only act through approved, safe routes, such as opening a pull request for review. It can’t change production on its own.
+
+The loop starts again: the new `intent.md` goes through all the phases again.
+
+---
+
+## Sources
+
+- **Anthropic, [The AI-Native SDLC Playbook](https://academy.claude.com/courses/ai-native-sdlc-playbook)** (Claude Academy). The phases, the ideas in each phase, and the examples (`intent.md`, `plan.md`, `AGENT.md`, `REVIEW.md`, the prompts and the hook) are based on this course.
+- **Matt Pocock, [skills](https://github.com/mattpocock/skills)** (GitHub). The `grill-me` and `to-spec` skills.
+- **Anthropic, [Claude Code documentation](https://code.claude.com/docs)**. Hooks, subagents and `CLAUDE.md`.
