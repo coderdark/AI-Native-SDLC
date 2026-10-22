@@ -6,12 +6,12 @@ Process that takes software from idea to products
 The process has **6** (six) stages, Planning, Design, Building, Testing, Deploying and Maintaining.
 
 ## OLD SDLC
-Plan: Requirements gathering.
-Design: Specs (detailed written requirements and design documents).
-Build: Test and Code (handwritten), and documentation written after the development happens.
-Test: QA gates at stage boundaries.
-Deploy: Humans review every line of code and governance occurs in review cycles and often inconsistently.
-Maintain: Humans watch production for bugs.
++ Plan: Requirements gathering.
++ Design: Specs (detailed written requirements and design documents).
++ Build: Test and Code (handwritten), and documentation written after the development happens.
++ Test: QA gates at stage boundaries.
++ Deploy: Humans review every line of code and governance occurs in review cycles and often inconsistently.
++ Maintain: Humans watch production for bugs.
 
 ## AI Native SDLC
 
