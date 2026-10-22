@@ -1,23 +1,32 @@
-# AI Native SDLC
+# AI-Native SDLC
 
 ## What is the SDLC?
 The process that takes software from an idea to a product.
 
 The process has **six** stages: Planning, Designing, Building, Testing, Deploying and Maintaining.
 
-## OLD SDLC
-+ Plan: Requirements gathering.
-+ Design: Specs (detailed written requirements and design documents).
-+ Build: Test and Code (handwritten), and documentation written after the development happens.
-+ Test: QA gates at stage boundaries.
-+ Deploy: Humans review every line of code and governance occurs in review cycles and often inconsistently.
-+ Maintain: Humans watch production for bugs.
+## Old SDLC
+- **Plan**: Requirements gathering.
+- **Design**: Specs (detailed written requirements and design documents).
+- **Build**: Tests and code (handwritten), and documentation written after the development happens.
+- **Test**: QA gates at stage boundaries.
+- **Deploy**: Humans review every line of code and governance occurs in review cycles and often inconsistently.
+- **Maintain**: Humans watch production for bugs.
 
-## **HUMANS ARE ACCOUNTABLE FOR EVERY DECISION THAT REQUIRES JUDGEMENT**
+> **Humans are accountable for every decision that requires judgement.**
 
-## AI Native SDLC
+## AI-Native SDLC
 
-### PLAN PHASE
+| Phase | Deliverable |
+| :---- | :---- |
+| Plan | `intent.md` |
+| Design | `spec.md` |
+| Build | `plan.md` |
+| Test | Tests |
+| Deployment | `REVIEW.md` |
+| Maintenance | A new `intent.md` |
+
+### Plan Phase
 **Description**: The user, working with AI, synthesizes pain points straight from the sources and captures them in an `intent.md`. This file is readable by humans and actionable by machines.
 
 - **Deliverable**: `intent.md`
@@ -69,8 +78,10 @@ No new PII in the portal session. Existing authentication only.
 Do third-party loss adjusters need access too?
 ```
 
-### DESIGN PHASE
-**Description:** The user, working with an agent, merges requirements and design into one working session, guided by standards encoded as skills and stored in a Git repo.
+---
+
+### Design Phase
+**Description**: The user, working with an agent, merges requirements and design into one working session, guided by standards encoded as skills and stored in a Git repo.
 
 - **Deliverable**: `spec.md`
 - **Who**: Product owner, using the `intent.md`
@@ -86,14 +97,16 @@ Read the attached intent.md and produce a requirements and design spec for integ
 
 You can also use **Matt Pocock’s** [`to-spec`](https://github.com/mattpocock/skills/blob/main/skills/engineering/to-spec/SKILL.md) skill or the skills in this repo.
 
-### BUILD PHASE
-**Description:** Code and tests are generated using AI. Institutional knowledge, as `AGENT.md` (`CLAUDE.md` -> `AGENT.md`) and skills, is stored in the Git repo.
+---
+
+### Build Phase
+**Description**: Code and tests are generated using AI. Institutional knowledge, as `AGENT.md` (`CLAUDE.md` -> `AGENT.md`) and skills, is stored in the Git repo.
 
 - **Deliverable**: `plan.md`
 - **Who**: Engineers
 - **Where**: Codebase repo
 - **Prerequisites**: `intent.md`, `spec.md` and `AGENT.md` (`CLAUDE.md` -> `AGENT.md`)
-- **Automation**: When **implementation** diverts from the **plan**, update `plan.md` in the same commit. Use a hook for synchronization between the two (implementation and plan).
+- **Automation**: When the **implementation** diverges from the **plan**, update `plan.md` in the same commit. Use a hook for synchronization between the two (implementation and plan).
 
 The engineer opens their agent in plan mode and uses the approved `spec.md` and `intent.md` files. Iterate until the engineer is happy with the plan. Commit the plan once ready as `plan.md`. If implementation diverges from the plan, make sure the `plan.md` file is updated.  You can use hooks to sync the implementation with the plan.
 
@@ -189,7 +202,7 @@ fi
 exit 0
 ```
 
-#### Parallel session and subagents
+#### Parallel sessions and subagents
 - A parallel session is a full agent instance, and each one works on its own task in its own Git worktree.
 - Subagents are helpers that an agent sends off to handle parts of a job. They are started from a single session, and each one works in its own separate context.
 
@@ -197,7 +210,7 @@ exit 0
 - An engineer can create their own subagents to run repeated jobs.
 - The engineer becomes an orchestrator.
 
-**WATCH OUT: HIGH TOKEN USE**
+> **Watch out: high token use.**
 
 Each subagent starts fresh. It doesn’t know what the main agent already knows. So each one has to:
 
@@ -205,7 +218,9 @@ Each subagent starts fresh. It doesn’t know what the main agent already knows.
 - read the files it needs, even if the main agent already read them
 - write its own report back
 
-### TEST PHASE
+---
+
+### Test Phase
 **Description**: Sessions check their own work before a human sees it, and the configuration that steers the agent gets regression-tested like the code it writes.
 
 - **Deliverables**: Tests
@@ -213,7 +228,7 @@ Each subagent starts fresh. It doesn’t know what the main agent already knows.
 - **Where**: Repo
 - **Prerequisites**: `AGENT.md` with the build, test and lint commands
 
-#### In AGENT.md (CLAUDE.md -> AGENT.md)
+#### In `AGENT.md` (`CLAUDE.md` -> `AGENT.md`)
 
 ```markdown
 ## Verifying your work
@@ -228,14 +243,16 @@ If a test fails, fix the code, not the test.
 
 Make the agent verify its own work by adding commands to your `AGENT.md` (`CLAUDE.md` -> `AGENT.md`) and giving it clear, measurable goals. You can also use the TDD approach (red, green, refactor).
 
-### DEPLOYMENT PHASE
+---
+
+### Deployment Phase
 **Description**: Review runs in both directions, and governance is enforced as the agent acts. The agent does everything up to the production gate and nothing past it.
 
 - **Deliverables**: `REVIEW.md`
-- **Who**: Tech lead 
+- **Who**: Tech lead
 - **Automation**: Code reviews run when someone opens a PR, using `REVIEW.md`
 
-#### REVIEW.md Example
+#### `REVIEW.md` example
 ```markdown
 # Review instructions
 ## Passes
@@ -254,7 +271,14 @@ Generated files under src/gen/ and anything CI already enforces.
 
 Use already established bots, skills, agents and hooks for reviews.
 
-### MAINTENANCE
-**Description**: The loop closes. A trigger invokes Claude with no person in the invocation path, and what it finds re-enters the pipeline as intent.md.
+---
+
+### Maintenance Phase
+**Description**: The loop closes. A trigger invokes Claude with no person in the invocation path, and what it finds re-enters the pipeline as `intent.md`.
+
+- **Deliverable**: A new `intent.md`
+- **Automation**: A trigger starts an agent, which investigates the problem and writes the new `intent.md`.
+
+The loop starts again: it creates a new `intent.md` file, which goes through all the phases again.
 
 A trigger such as a control-band breach, a ticket, a channel message or a schedule invokes Claude without a person in the path.
