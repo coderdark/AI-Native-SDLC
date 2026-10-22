@@ -208,10 +208,12 @@ Each subagent starts fresh. It doesn’t know what the main Agent already knows.
 ### TEST PHASE
 **Description**: Sessions checks their own work before a human sees it, and the configuration that steers the agent gets regression-tested like the code it writes.
 
-- **Deliverables**: AGENT.md session for test
-- **Who**:Engineers
-- **Where**:
+- **Deliverables**: Tests,
+- **Who**: Engineers
+- **Where**: Repo
 - **Prerequisites**: 
+
+#### In AGENT.md (CLAUDE.md ->AGENT.md)
 
 ```## Verifying your work
 
@@ -223,7 +225,34 @@ Run all three before reporting any task complete, and paste the output.
 If a test fails, fix the code, not the test.
 ```
 
+Make the agent to verify its own work by adding commands to your `AGENT.md` (`CLAUDE.md` -> `AGENT.md`), giving clear measurable goals.  You can also use the TDD approach (red, greeen, refactor)
+
 ### DEPLOYMENT PHASE
-Description: Review runs in both directions, and governance is enforced as the agent acts. The agent does everything up to the production gate and nothing past it.
+**Description**: Review runs in both directions, and governance is enforced as the agent acts. The agent does everything up to the production gate and nothing past it.
+
+- **Delieverables**: `REVIEW.md`
+- **Who**: Tech lead 
+- **Automation**: code reviews when someone opens a pr using `REVIEW.md`
+
+#### REVIEW.md Example
+```# Review instructions
+## Passes
+Run three passes and tag each finding with its pass:
+- Bugs: logic errors, broken edge cases, subtle regressions
+- Security: injection risks, authentication gaps, PII in logs
+- Compliance: the change matches spec.md, plan.md and our design principles
+## What Important means here
+Reserve Important for findings that would break behavior, leak data
+or breach a policy. Style and naming are nits.
+## Cap the nits
+Report at most five nits per review; summarize the rest as a count.
+## Do not report
+Generated files under src/gen/ and anything CI already enforces.
+```
+
+Use already established, bots, skills, agents, hooks for reviews.
 
 ### MAINTENCE
+**Description**: The loop closes. A trigger invokes Claude with no person in the invocation path, and what it finds re-enters the pipeline as intent.md.
+
+A trigger such as a control-band breach, a ticket, a channel message or a schedule invokes Claude without a person in the path
