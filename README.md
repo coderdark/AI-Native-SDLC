@@ -24,7 +24,7 @@ The process has **six** stages: Planning, Designing, Building, Testing, Deployin
 - **Who**: Product owner watches and approves, tech team stands up the intent in the repo.
 - **Where**: In the product repo. If the intent covers many repos, you may want to create an intent repo to store it.
 - **Prerequisites**: An idea and a brainstorm
-- **Automation**:
+- **Automation**: Use the `write-intent` skill in this repo, or Matt Pocock’s `grill-me` skill, to run the brainstorm and write the `intent.md`.
 
 You start with an idea and brainstorm with your preferred agent. The agent asks the questions an analyst would ask, such as scope, users, constraints and what success looks like. The intent covers the problem, proposed outcome, affected users and systems, constraints and open questions.
 
@@ -211,7 +211,7 @@ Each subagent starts fresh. It doesn’t know what the main agent already knows.
 - **Deliverables**: Tests
 - **Who**: Engineers
 - **Where**: Repo
-- **Prerequisites**: 
+- **Prerequisites**: `AGENT.md` with the build, test and lint commands
 
 #### In AGENT.md (CLAUDE.md -> AGENT.md)
 
