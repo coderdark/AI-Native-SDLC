@@ -4,9 +4,18 @@
 Process that takes software from idea to products
 
 The process has **6** (six) stages, Planning, Design, Building, Testing, Deploying and Maintaining.
-	
 
-## PLAN PHASE
+## OLD SDLC
+Plan: Requirements gathering
+Design: Specs (detailed written requirements and design documents)
+Build: Test and Code (handwritten), and documentation written after the development happens.
+Test: QA gates at stage boundaries
+Deploy: Humans review every line of code and governance occurs in review cycles and often inconsistently.
+
+
+## AI Native SDLC
+
+### PLAN PHASE
 Description: User using AI synthesizes pain points straight from the sources and captures them in an intent.md.  This file is human and machine actionable
 
 Deliverable: `intent.md`
@@ -51,7 +60,7 @@ No new PII in the portal session. Existing authentication only.
 Do third-party loss adjusters need access too?
 ```
 
-## DESIGN PHASE
+### DESIGN PHASE
 Description: User using an agent merges requirements and design into a working session guided by standards encoded as skills, stored in git repo.
 
 Deliverable: `spec.md`
@@ -66,7 +75,7 @@ You can also use __Matt Pocock’s__ `to-spec` skill.
 
 https://github.com/mattpocock/skills/blob/main/skills/engineering/to-spec/SKILL.md
 
-## BUILD PHASE
+### BUILD PHASE
 Description: Code and test are generated using AI and institutional knowledge as AGENT.md (CLAUDE.md -> AGENT.md) and skills are stored in git repo.
 
 Deliverable: `plan.md`
@@ -120,7 +129,7 @@ AGENT.md (CLAUDE.md -> AGENT.md)
 - The legacy v1/ package is frozen; changes go in v2/.
 ```
 
-## TEST PHASE
+### TEST PHASE
 Description: Sessions checks their own work before a human sees it, and the configuration that steers the agent gets regression-tested like the code it writes.
 
 Deliverables: AGENT.md session for test
@@ -135,5 +144,5 @@ Run all three before reporting any task complete, and paste the output.
 If a test fails, fix the code, not the test.
 ```
 
-## DEPLOYMENT PHASE
+### DEPLOYMENT PHASE
 Description: Review runs in both directions, and governance is enforced as the agent acts. The agent does everything up to the production gate and nothing past it.
