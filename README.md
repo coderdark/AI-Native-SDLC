@@ -1,4 +1,7 @@
 # AI Native SDLC
+
+## What is SDLC: 
+Process that takes software from idea to products
 	
 
 ## PLAN PHASE
