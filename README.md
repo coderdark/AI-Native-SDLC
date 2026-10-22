@@ -37,7 +37,7 @@ It has six stages: **Plan, Design, Build, Test, Deploy and Maintain.**
 **What changes:** Instead of weeks of workshops, the product owner works with an agent that pulls pain points straight from the sources and captures them in `intent.md`. The file is readable by people and actionable by agents.
 
 - **Deliverable:** `intent.md`
-- **Who:** The product owner writes and approves it. The tech team stands it up in the repo.
+- **Who:** The product owner writes it with an agent and approves it. The tech team stands it up in the repo.
 - **Where:** In the product repo. If the intent covers several repos, keep it in a dedicated intent repo. It can also live in a ticket (for example, Jira).
 - **Prerequisites:** An idea.
 - **Automation:** Use the `write-intent` skill in this repo to run the brainstorm and write the file.
@@ -47,6 +47,7 @@ It has six stages: **Plan, Design, Build, Test, Deploy and Maintain.**
 1. Start with the idea and brainstorm with your agent. The agent asks the questions an analyst would ask: scope, users, constraints and what success looks like.
 2. Alternatively, use Matt Pocock's [`grill-me`](https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md) skill. It stress-tests a plan through systematic questioning, branch by branch, until there is a shared understanding.
 3. When the idea is concrete, ask the agent to write `intent.md`. It covers the problem, proposed outcome, affected users and systems, constraints and open questions.
+4. The product owner approves it. The accept or reject decision that sends the intent into Stage 2: Design is recorded as the merge or the closing review.
 
 **Prompt to create `intent.md`:**
 
@@ -281,16 +282,6 @@ The agent writes code, runs the checks, fixes what fails and runs them again, un
 Run all three before reporting any task complete, and paste the output.
 If a test fails, fix the code, not the test.
 ```
-
-### Run continuous evals in CI
-
-The feedback loop tests the **code**. Evals test the **agent's setup**.
-
-1. Collect 20 to 50 real tasks from recent work, each with its accepted outcome.
-2. Turn each into an eval: the prompt plus the checks that define a good result.
-3. Run the suite in CI on a schedule and whenever `AGENTS.md`, skills or hooks change.
-4. Review any configuration change that lowers the pass rate before it merges.
-5. Add an eval for every production incident, so the same mistake cannot quietly return.
 
 ---
 
