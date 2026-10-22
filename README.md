@@ -22,7 +22,7 @@ The process has **6** (six) stages, Planning, Design, Building, Testing, Deployi
 - **Who**: Product owner watches, tech team stands up the intent in the repo.
 - **Where**: in product repo or if the intent covers many repos, then we may one to create an intent repo to store the intent.
 
-You start with an idea, brain storm with your prefer agent: 
+You start with an idea, brain storm with your prefer agent, the agent will ask questions that an analyst will ask like scope, users, constraints, and what success looks like. 
 
 Or you can start with the __Matt Pocock’s__ `grill-me` skill, https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md this is an interview skill that stress-tests plans and designs through systematic questioning.  Goes through a decision tree branch by branch until a shared understanding is reached.
 
