@@ -13,6 +13,8 @@ The process has **6** (six) stages, Planning, Design, Building, Testing, Deployi
 + Deploy: Humans review every line of code and governance occurs in review cycles and often inconsistently.
 + Maintain: Humans watch production for bugs.
 
+## **HUMANS ARE ACCOUNTABLE FOR EVERY DECISION THAT REQUIRES JUDGEMENT**
+
 ## AI Native SDLC
 
 ### PLAN PHASE
@@ -21,8 +23,10 @@ The process has **6** (six) stages, Planning, Design, Building, Testing, Deployi
 - **Deliverable**: `intent.md`
 - **Who**: Product owner watches and approves, tech team stands up the intent in the repo.
 - **Where**: in product repo or if the intent covers many repos, then we may one to create an intent repo to store the intent.
+- **Prerequisites**: idea, brainstorm
+- **Automation**:
 
-You start with an idea, brain storm with your prefer agent, the agent will ask questions that an analyst will ask like scope, users, constraints, and what success looks like.   The intent will cover: The problem, proposed outcome, affected users and systems, constraints, and open questions.
+You start with an idea, brainstorm with your prefer agent, the agent will ask questions that an analyst will ask like scope, users, constraints, and what success looks like.   The intent will cover: The problem, proposed outcome, affected users and systems, constraints, and open questions.
 
 Or you can start with the __Matt Pocock’s__ `grill-me` skill, https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md this is an interview skill that stress-tests plans and designs through systematic questioning.  Goes through a decision tree branch by branch until a shared understanding is reached.
 
@@ -43,7 +47,7 @@ Write only what I said. Put anything I did not say into Open questions. Do not i
 Example `intent.md`
 
 ```# Intent: claims status self-service
-Author: J. Ortiz (claims operations). Status: draft.
+Author: J. Doe (claims operations). Status: draft.
 
 ## Problem
 Customers phone the contact center to ask where their claim is.
@@ -63,9 +67,13 @@ Do third-party loss adjusters need access too?
 ```
 
 ### DESIGN PHASE
-Description: User using an agent merges requirements and design into a working session guided by standards encoded as skills, stored in git repo.
+**Description:** User using an agent merges requirements and design into a working session guided by standards encoded as skills, stored in git repo.
 
-Deliverable: `spec.md`
+- **Deliverable**: `spec.md`
+- **Who**: Product owner, using the `intent.md`
+- **Where**: In the intent/ folder where the `intent.md` is 
+- **Prerequisites**: `intent.md`
+- **Automation** the `spec.md` creation can be automated by, merging the accepted `intent.md` and running a script/github workflows to create the `spec.md` pull request.
 
 You can use the following prompt to create the `spec.md` file:
 
@@ -80,11 +88,15 @@ https://github.com/mattpocock/skills/blob/main/skills/engineering/to-spec/SKILL.
 ### BUILD PHASE
 Description: Code and test are generated using AI and institutional knowledge as AGENT.md (CLAUDE.md -> AGENT.md) and skills are stored in git repo.
 
-Deliverable: `plan.md`
+- **Deliverable**: `plan.md`
+- **Who**: Engineers
+- **Where**: Codebase repo
+- **Prerequisites**: `intent.md`, `spec.md` and `AGENT.md` (`CLAUDE.md` -> `AGENT.md`)
+- **Automation**: When **implementation** diverts from the **plan**, update `plan.md` in the same commit. Use a hook for synchronization between the two (implementation and plan).
 
-The user opens their agent in plan mode and uses the `spec.md` and `intent.md` files.  Iterate until the engineer is happy with the plan. Commit the plan once ready as `plan.md`. If implementation diverges from the plan, make sure the `plan.md` file is updated.  You can use hooks to sync the implementation with the plan.
+The engineer opens their agent in plan mode and uses the approved `spec.md` and `intent.md` files.  Iterate until the engineer is happy with the plan. Commit the plan once ready as `plan.md`. If implementation diverges from the plan, make sure the `plan.md` file is updated.  You can use hooks to sync the implementation with the plan.
 
-The AGENT.md file will cover: conventions, commands, architecture, and the mistakes the team sees most often. Knowledge that used to sit in people's heads and on wikis becomes a file the agent reads at the start of every session, maintained by the whole team and iterated on whenever a mistake is made.
+Engineer interrogates the plan by asking what could break with the change, find out what step is most risky and for other options.
 
 ```
 # Plan: claims status self-service (from intent.md 2026-06-02)
@@ -94,19 +106,24 @@ portal/src/claims/StatusPanel.tsx (new), claims-api/routes/status.py,
 claims-api/tests/test_status.py
 
 ## Order of work
-1. Add the status endpoint behind existing auth.
-2. Panel against the endpoint.
+1. Add the status endpoint behind existing auth (R1, R2, R3).
+2. Panel against the endpoint (R1, R4).
 3. Wire into the portal nav.
 
 ## Risks
 The claims-core API rate-limits at 50 rps; the panel must cache.
 
 ## Proof
-test_status.py covers the four claim states; screenshot matches the
+test_status.py covers the four claim states (R2); screenshot matches the
 approved mock.
 ```
 
-AGENT.md (CLAUDE.md -> AGENT.md)
+**R1, R2, R3, R4** are requirements from the `spec.md`
+
+#### `AGENT.md` (`CLAUDE.md` -> `AGENT.md`)
+
+The `AGENT.md`(`CLAUDE.md` -> `AGENT.md`) file will cover: conventions, commands, architecture, and the mistakes the team sees most often. Knowledge that used to sit in people's heads and on wikis becomes a file the agent reads at the start of every session, maintained by the whole team and iterated on whenever a mistake is made.
+
 
 ```
 # Payments service
@@ -131,10 +148,70 @@ AGENT.md (CLAUDE.md -> AGENT.md)
 - The legacy v1/ package is frozen; changes go in v2/.
 ```
 
-### TEST PHASE
-Description: Sessions checks their own work before a human sees it, and the configuration that steers the agent gets regression-tested like the code it writes.
+#### Skills
+A skill is a packaged set of instructions that teaches AI how your organization does a specific kind of work. It captures reusable company, technical and institutional knowledge, such as brand guidelines, security policies or UX standards. Skills are version controlled and shared across every team. When a policy changes, the skill is updated once, and every team's work follows the new standard consistently.
 
-Deliverables: AGENT.md session for test
+
+#### Hooks
+Hooks are automatic rules that run at specific moments while Claude Code works.  You can use hooks to run skills for linting, removing sensitive data and so on.
+
+```
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          { "type": "command",
+            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/api-policy.sh",
+            "args": [] }
+        ]
+      }
+    ]
+  }
+}
+```
+```
+#!/bin/bash
+# Backs rule 4 of the secure-api-review skill with the same script the skill runs.
+file=$(jq -r '.tool_input.file_path')
+case "$file" in
+  "$CLAUDE_PROJECT_DIR"/claims-api/routes/*.py) ;;
+  *) exit 0 ;;                                   # not an endpoint
+esac
+cd "$CLAUDE_PROJECT_DIR" || exit 2
+if ! found=$(scripts/check-endpoints.sh "${file#"$CLAUDE_PROJECT_DIR"/}"); then
+  echo "secure-api-review rule 4: a pii field reaches a log or an error message." >&2
+  echo "$found" >&2
+  exit 2
+fi
+```
+
+#### Parallel session and subagents
+- A parallel session is a full agent instance, and each one works on its own task in its own Git worktree.
+- Subagents are helpers that an agent sends off to handle parts of a job. They are started from a single session, and each one works in its own separate context.
+
+Engineer can run multiple agent sessions at once each with its own worktree
+
+Engineer can create its own subagent to run repeated jobs.
+
+Enginner becomes an orchestrator
+
+**WATCH OUT: HIGH TOKEN USE**
+
+Each subagent starts fresh. It doesn’t know what the main Agent already knows. So each one has to:
+
+- read its own instructions
+- read the files it needs, even if the main Claude already read them
+- write its own report back
+
+### TEST PHASE
+**Description**: Sessions checks their own work before a human sees it, and the configuration that steers the agent gets regression-tested like the code it writes.
+
+- **Deliverables**: AGENT.md session for test
+- **Who**:Engineers
+- **Where**:
+- **Prerequisites**: 
 
 ```## Verifying your work
 
@@ -148,3 +225,5 @@ If a test fails, fix the code, not the test.
 
 ### DEPLOYMENT PHASE
 Description: Review runs in both directions, and governance is enforced as the agent acts. The agent does everything up to the production gate and nothing past it.
+
+### MAINTENCE
