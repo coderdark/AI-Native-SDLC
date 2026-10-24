@@ -1,86 +1,78 @@
 ---
 name: write-intent
-description: Turn a rough idea into an intent.md by brainstorming with the user like an analyst until the problem, outcome, users, constraints and open questions are concrete.
+description: Write up an idea, request, ticket or alert as an intent.md
+  proto-spec for product owner review. Use when someone asks to capture,
+  write up or log an idea, intent, proto-spec or feature request, says
+  "I have an idea", or asks to turn a ticket or incident into an intent.
+  Do not use when someone asks Claude to build or fix something directly.
 ---
+# Write an intent.md
 
-# Write intent
+An intent.md captures what is wanted, why, and under which constraints,
+in the originator's own words. It is the first artifact in the SDLC loop:
+once the product owner accepts it, it becomes the input for the
+requirements and design spec. It is not a spec: no solution design, no
+estimates, no tasks.
 
-Help the user turn a rough idea into a short, clear `intent.md`. The user can talk informally. Your job is to ask the questions an analyst would ask, until the idea is concrete enough to hand to Stage 2: Design.
+An intent can start from a person's idea, a ticket, or an alert or
+incident. The same steps apply to all three.
 
-## When to use
+## 1. Read the template and example
+Before asking any questions, read `template.md` in this skill's folder.
+Its sections tell you what the conversation needs to cover. Read
+`example.md` too if you have not written an intent in this session yet.
+It shows the length and tone to aim for. Never copy its content.
 
-- The user describes a problem, a pain point, or an idea and wants to capture it as an intent.
-- The user says things like "we can't do X today", "people keep asking for Y", or "it would be better if Z".
-- The user asks for an `intent.md`.
+## 2. Brainstorm until the idea is concrete
+Let the originator describe the problem in their own words. No formal
+language is required. Then ask the questions an analyst would ask, two
+or three at a time, in plain language. Skip anything they have already
+answered, and stop once you can fill every section of the template.
+Cover:
+- Author: their name and team, if not already known.
+- Problem: What can't you do today? How often? What does it cost
+  (time, money, errors, complaints)?
+- Users: Who is affected? Who else would notice the change?
+- Success: What does "better" look like? How would we know it worked?
+- Systems: Which tools, services or data does this touch, if known?
+- Constraints: Any rules on data, privacy, security, compliance,
+  deadlines or budget?
+- Scope: What is explicitly out of scope?
 
-## What the user may give you
+If the template has sections not listed above, ask about those too.
 
-Any mix of these, in any order, in plain words:
-- what they cannot do today
-- who is affected
-- what better looks like
-- what is out of scope
+If the intent starts from a ticket or an alert, read it first and use it
+as the source. Ask the person who invoked you only about what the ticket
+or alert leaves unclear, and include the ticket or alert ID in the
+Problem section so the two records stay linked.
 
-No formal language is needed. Do not ask the user to rewrite anything formally.
+Don't invent answers. If nobody knows, record it under Open questions.
+Don't propose technical solutions unless asked.
 
-## Steps
+## 3. Write the file
+Follow `template.md` exactly: same headings, same order, same header
+line. Replace every placeholder in angle brackets; leave none behind.
+Keep it under one page. Use the originator's words where possible, and
+include numbers they gave you.
 
-1. **Listen first.** Read what the user gave you. Sort it into the five sections below. Notice what is missing or vague.
+## 4. Let the originator correct it
+Show the draft and ask: "Is anything wrong or missing?" Apply their
+corrections. The originator must agree before it is committed.
 
-2. **Brainstorm until it is concrete.** Ask the questions an analyst would ask. Ask **two or three at a time**, not a long list, and build on each answer. Cover:
-   - **Problem:** What exactly goes wrong today? How often? What does it cost (time, money, complaints)? Is there a number, even a rough one?
-   - **Outcome:** What does better look like? How would someone know it worked? What is the smallest version that would still help?
-   - **Users:** Who feels the problem? Who would use the change? Who else is touched (support, other teams, partners)?
-   - **Systems:** Which apps, services or data are involved?
-   - **Constraints:** Rules that must not be broken: security, privacy, legal, budget, deadlines, technology.
-   - **Scope:** What is deliberately left out?
-
-   Stop asking when each section has something specific in it. Do not keep asking just to be thorough.
-
-3. **Keep the user's facts, not your guesses.** Write down only what the user told you or confirmed. If something is still unknown, put it under Open questions. Never invent numbers, names or systems.
-
-4. **Write the intent.** Use the format below. Keep it short: a few plain sentences per section. Use the user's own words where they are clear.
-
-5. **Show it and confirm.** Show the draft to the user and ask if anything is wrong or missing. Update it, then save it as `intent.md`.
-
-## Output format
-
-```
-# Intent: <short name>
-Author: <name> (<team>). Status: draft.
-## Problem
-<What goes wrong today, for whom, and how much it costs.>
-## Proposed outcome
-<What better looks like.>
-## Affected users and systems
-<People, teams and systems involved.>
-## Constraints
-<Rules that must not be broken. What is out of scope.>
-## Open questions
-<Anything still unknown.>
-```
+## 5. Commit to the intent home
+- File name: `intent/<YYYY-MM>-<kebab-case-name>.md`
+- If a GitHub connector or git access is available, create a branch
+  named `intent/<kebab-case-name>`, add the file, and open a pull
+  request titled "Intent: <short name>". The PR description should be
+  a two-sentence summary of the problem and outcome. The product owner
+  reviews and corrects it in the PR.
+- If no repo access is available, give the originator the final file to
+  paste in, and tell them where it goes.
 
 ## Rules
-
-- Describe the problem and the outcome, not the solution. Leave the "how" for the design stage.
-- If the user starts designing (for example, "add a button that..."), note the underlying need and keep the design idea as context, not a requirement.
-- Status is always "draft". The product owner decides if it moves on.
-- If the author or team is unknown, ask once. If still unknown, leave a placeholder.
-
-## Example
-
-```
-# Intent: claims status self-service
-Author: J. Doe (claims operations). Status: draft.
-## Problem
-Customers phone the contact center to ask where their claim is.
-Handlers spend roughly a third of call time on status-only queries.
-## Proposed outcome
-Customers see claim status, next step and expected date in the portal.
-## Affected users and systems
-Claims handlers, portal team, claims-core API.
-## Constraints
-No new PII in the portal session. Existing authentication only.
-## Open questions
-Do third-party loss adjusters need access too?
-```
+- One idea per file. If the conversation covers two ideas, write two.
+- Leave Status as draft. The product owner's decision is recorded by the
+  PR: merging accepts the intent into design, closing rejects it.
+- Don't add a date. Git records the author and timestamp of the commit.
+- Never include secrets, passwords or customer personal data. Describe
+  the kind of data instead ("customer addresses").
